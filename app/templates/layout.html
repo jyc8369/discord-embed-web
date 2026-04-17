@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Discord Embed Manager</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: #111827;
+      background: #eef2ff;
+      --surface: #ffffff;
+      --surface-strong: #f8fafc;
+      --border: #e5e7eb;
+      --primary: #4f46e5;
+      --primary-soft: #eef2ff;
+      --success: #16a34a;
+      --warning: #d97706;
+      --danger: #b91c1c;
+      --text: #111827;
+      --muted: #4b5563;
+      --hero-bg: linear-gradient(135deg, #ffffff, #eef2ff);
+      --hero-border: rgba(99,102,241,.16);
+      --button-bg: linear-gradient(135deg, #6366f1, #4f46e5);
+      --button-text: #ffffff;
+      --link-bg: rgba(79,70,229,.12);
+      --link-text: #4338ca;
+      --action-bg: #eef2ff;
+      --action-border: rgba(79,70,229,.16);
+    }
+
+    [data-theme="dark"] {
+      color-scheme: dark;
+      color: #f8fafc;
+      background: #0f172a;
+      --surface: #111827;
+      --surface-strong: #111827;
+      --border: #1f2937;
+      --primary: #6366f1;
+      --primary-soft: #1e293b;
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --danger: #f87171;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --hero-bg: linear-gradient(135deg, rgba(30,41,59,.95), rgba(15,23,42,.95));
+      --hero-border: rgba(148,163,184,.12);
+      --button-bg: linear-gradient(135deg, #6366f1, #4f46e5);
+      --button-text: #ffffff;
+      --link-bg: rgba(99,102,241,.16);
+      --link-text: #c7d2fe;
+      --action-bg: #1f2937;
+      --action-border: rgba(148,163,184,.18);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      background: radial-gradient(circle at top, rgba(99, 102, 241, 0.12), transparent 28%),
+                  linear-gradient(180deg, #eef2ff 0%, #f8fafc 100%);
+    }
+
+    [data-theme="dark"] body {
+      background: radial-gradient(circle at top, rgba(99, 102, 241, 0.08), transparent 30%),
+                  linear-gradient(180deg, #020617 0%, #0f172a 100%);
+    }
+
+    .container {
+      width: min(1100px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 32px 0 48px;
+    }
+
+    header {
+      margin-bottom: 28px;
+    }
+
+    header .hero {
+      display: grid;
+      gap: 18px;
+      background: var(--hero-bg);
+      border: 1px solid var(--hero-border);
+      box-shadow: 0 20px 60px rgba(15,23,42,.08);
+      border-radius: 24px;
+      padding: 32px;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: clamp(2.4rem, 2.5vw, 3.25rem);
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+    }
+
+    header p {
+      margin: 0;
+      max-width: 720px;
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.8;
+    }
+
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
+      align-items: center;
+    }
+
+    nav a,
+    .theme-toggle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 16px;
+      border-radius: 999px;
+      background: var(--link-bg);
+      color: var(--link-text);
+      text-decoration: none;
+      font-weight: 600;
+      transition: transform .18s ease, background .18s ease;
+      border: 1px solid transparent;
+    }
+
+    .theme-toggle {
+      cursor: pointer;
+      border-color: var(--action-border);
+      background: var(--action-bg);
+    }
+
+    nav a:hover,
+    .theme-toggle:hover {
+      transform: translateY(-1px);
+      background: rgba(79,70,229,.2);
+    }
+
+    nav a:hover {
+      transform: translateY(-1px);
+      background: rgba(79,70,229,.2);
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      box-shadow: 0 20px 50px rgba(15,23,42,.06);
+      padding: 28px;
+      margin-bottom: 24px;
+    }
+
+    .card h2 {
+      margin-top: 0;
+      margin-bottom: 18px;
+      font-size: 1.5rem;
+      color: var(--text);
+    }
+
+    .flash {
+      padding: 14px 18px;
+      border-radius: 16px;
+      margin-bottom: 18px;
+      border: 1px solid transparent;
+      font-weight: 600;
+    }
+
+    .flash.success { background: #ecfdf5; color: #166534; border-color: #d1fae5; }
+    .flash.warning { background: #fffbeb; color: #b45309; border-color: #fde68a; }
+    .flash.danger { background: #fee2e2; color: #991b1b; border-color: #fecaca; }
+
+    label {
+      display: block;
+      margin: 1.1rem 0 0.35rem;
+      color: var(--muted);
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+
+    input,
+    textarea,
+    select {
+      width: 100%;
+      font: inherit;
+      padding: 14px 16px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: var(--surface);
+      color: var(--text);
+      transition: border-color .2s ease, box-shadow .2s ease;
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+      outline: none;
+      border-color: rgba(79,70,229,.7);
+      box-shadow: 0 0 0 4px rgba(99,102,241,.12);
+    }
+
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    button,
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: auto;
+      padding: 12px 20px;
+      margin-top: 16px;
+      border: none;
+      border-radius: 14px;
+      background: var(--button-bg);
+      color: var(--button-text);
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform .2s ease, box-shadow .2s ease, opacity .2s ease;
+    }
+
+    button:hover,
+    .button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 16px 28px rgba(79,70,229,.18);
+    }
+
+    button:disabled {
+      opacity: .65;
+      cursor: not-allowed;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .form-row.stacked {
+      grid-template-columns: 1fr;
+    }
+
+    .field-group {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0 12px;
+    }
+
+    table th,
+    table td {
+      padding: 14px 16px;
+      text-align: left;
+      vertical-align: middle;
+    }
+
+    table thead th {
+      color: #4b5563;
+      font-size: 0.95rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      border-bottom: 1px solid var(--border);
+    }
+
+    table tbody tr {
+      background: var(--surface-strong);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+    }
+
+    table tbody tr td {
+      border: none;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .actions a,
+    .actions button {
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .actions a {
+      background: #eef2ff;
+      color: #4338ca;
+      border: 1px solid rgba(79,70,229,.16);
+    }
+
+    .actions button {
+      background: #fef2f2;
+      color: #b91c1c;
+      border: 1px solid rgba(248,113,113,.3);
+      cursor: pointer;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 24px 16px 40px;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      table {
+        font-size: 0.95rem;
+      }
+
+      header .hero {
+        padding: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Discord Embed Manager</h1>
+      <nav>
+        <a href="{{ url_for('index') }}">Home</a>
+        {% if user %}
+          <a href="{{ url_for('history') }}">History</a>
+          <a href="{{ url_for('logout') }}">Logout</a>
+        {% else %}
+          <a href="{{ url_for('login') }}">Login with Discord</a>
+        {% endif %}
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">Dark</button>
+      </nav>
+    </header>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash {{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+  </div>
+  <script>
+    const themeToggle = document.getElementById('theme-toggle');
+    const storedTheme = localStorage.getItem('theme');
+    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const defaultTheme = storedTheme || (systemPrefersDark ? 'dark' : 'light');
+    const root = document.documentElement;
+
+    function applyTheme(theme) {
+      root.setAttribute('data-theme', theme);
+      localStorage.setItem('theme', theme);
+      themeToggle.textContent = theme === 'dark' ? 'Light' : 'Dark';
+    }
+
+    applyTheme(defaultTheme);
+
+    themeToggle.addEventListener('click', () => {
+      const nextTheme = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      applyTheme(nextTheme);
+    });
+  </script>
+</body>
+</html>

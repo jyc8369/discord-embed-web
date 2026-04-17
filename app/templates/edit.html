@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+{% block content %}
+  <div class="card">
+    <h2>Edit Embed Record #{{ record.id }}</h2>
+    <form action="{{ url_for('update_history', record_id=record.id) }}" method="post">
+      <label for="title">Title</label>
+      <input id="title" name="title" value="{{ record.embed_payload.title or '' }}" />
+
+      <label for="description">Description</label>
+      <textarea id="description" name="description" rows="4">{{ record.embed_payload.description or '' }}</textarea>
+
+      <label for="color">Color (hex)</label>
+      <input id="color" name="color" value="{% if record.embed_payload.color %}#{{ '%06x'|format(record.embed_payload.color) }}{% endif %}" />
+
+      <label for="footer_text">Footer text</label>
+      <input id="footer_text" name="footer_text" value="{{ record.embed_payload.footer.text if record.embed_payload.footer else '' }}" />
+
+      <label for="image_url">Image URL</label>
+      <input id="image_url" name="image_url" value="{{ record.embed_payload.image.url if record.embed_payload.image else '' }}" />
+
+      <label for="thumbnail_url">Thumbnail URL</label>
+      <input id="thumbnail_url" name="thumbnail_url" value="{{ record.embed_payload.thumbnail.url if record.embed_payload.thumbnail else '' }}" />
+
+      {% for i in range(1, 4) %}
+        <label>Field {{ i }}</label>
+        <input name="field_{{ i }}_name" placeholder="Field title" value="{{ record.embed_payload.fields[i-1].name if record.embed_payload.fields and record.embed_payload.fields|length >= i else '' }}" />
+        <input name="field_{{ i }}_value" placeholder="Field value" value="{{ record.embed_payload.fields[i-1].value if record.embed_payload.fields and record.embed_payload.fields|length >= i else '' }}" />
+      {% endfor %}
+
+      <button type="submit">Update Embed</button>
+    </form>
+  </div>
+{% endblock %}

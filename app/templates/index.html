@@ -1,0 +1,53 @@
+{% extends "layout.html" %}
+{% block content %}
+  <div class="card">
+    {% if user %}
+      <h2>로그인 완료</h2>
+      <p>Discord 사용자: {{ user.username }}#{{ user.discriminator }}</p>
+      <p>새 임베드를 생성하려면 아래 폼을 작성하세요.</p>
+    {% else %}
+      <h2>Discord OAuth2 로그인</h2>
+      <p>Discord 계정으로 로그인한 후 임베드 생성/기록 기능을 사용할 수 있습니다.</p>
+      <a href="{{ url_for('login') }}"><button>Login with Discord</button></a>
+    {% endif %}
+  </div>
+
+  {% if user %}
+    <div class="card">
+      <h2>Create Embed</h2>
+      <form action="{{ url_for('create_embed') }}" method="post">
+        <label for="title">Title</label>
+        <input id="title" name="title" placeholder="Embed title" />
+
+        <label for="description">Description</label>
+        <textarea id="description" name="description" rows="4" placeholder="Embed description"></textarea>
+
+        <label for="color">Color (hex)</label>
+        <input id="color" name="color" placeholder="#3498db" />
+
+        <label for="footer_text">Footer text</label>
+        <input id="footer_text" name="footer_text" placeholder="Footer text" />
+
+        <label for="image_url">Image URL</label>
+        <input id="image_url" name="image_url" placeholder="https://..." />
+
+        <label for="thumbnail_url">Thumbnail URL</label>
+        <input id="thumbnail_url" name="thumbnail_url" placeholder="https://..." />
+
+        <label>Field 1</label>
+        <input name="field_1_name" placeholder="Field title" />
+        <input name="field_1_value" placeholder="Field value" />
+
+        <label>Field 2</label>
+        <input name="field_2_name" placeholder="Field title" />
+        <input name="field_2_value" placeholder="Field value" />
+
+        <label>Field 3</label>
+        <input name="field_3_name" placeholder="Field title" />
+        <input name="field_3_value" placeholder="Field value" />
+
+        <button type="submit">Send Embed</button>
+      </form>
+    </div>
+  {% endif %}
+{% endblock %}
