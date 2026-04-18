@@ -33,25 +33,25 @@
     [data-theme="dark"] {
       color-scheme: dark;
       color: #f8fafc;
-      background: #0f172a;
-      --surface: #111827;
-      --surface-strong: #111827;
-      --border: #1f2937;
+      background: #393E42;
+      --surface: #393E42;
+      --surface-strong: #393E42;
+      --border: #4b5256;
       --primary: #6366f1;
-      --primary-soft: #1e293b;
+      --primary-soft: #494f53;
       --success: #22c55e;
       --warning: #f59e0b;
       --danger: #f87171;
-      --text: #e2e8f0;
-      --muted: #94a3b8;
-      --hero-bg: linear-gradient(135deg, rgba(30,41,59,.95), rgba(15,23,42,.95));
-      --hero-border: rgba(148,163,184,.12);
+      --text: #f8fafc;
+      --muted: #cbd5e1;
+      --hero-bg: linear-gradient(135deg, rgba(57,62,66,.95), rgba(57,62,66,.95));
+      --hero-border: rgba(203,213,225,.12);
       --button-bg: linear-gradient(135deg, #6366f1, #4f46e5);
       --button-text: #ffffff;
       --link-bg: rgba(99,102,241,.16);
       --link-text: #c7d2fe;
-      --action-bg: #1f2937;
-      --action-border: rgba(148,163,184,.18);
+      --action-bg: #494f53;
+      --action-border: rgba(203,213,225,.18);
     }
 
     * {
@@ -153,6 +153,147 @@
       box-shadow: 0 20px 50px rgba(15,23,42,.06);
       padding: 28px;
       margin-bottom: 24px;
+    }
+
+    .embed-preview-card {
+      margin-top: 24px;
+      background: var(--surface-strong);
+      border-color: var(--border);
+    }
+
+    .discord-message-inner {
+      display: grid;
+      gap: 16px;
+      padding: 18px;
+      border-radius: 22px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.05);
+    }
+
+    .discord-author-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #4f46e5, #818cf8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 0.95rem;
+      flex-shrink: 0;
+    }
+
+    .discord-message-content {
+      display: grid;
+      gap: 12px;
+    }
+
+    .discord-author-info {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      color: var(--muted);
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+
+    .discord-author-username {
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    .discord-application-tag {
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(79,70,229,.1);
+      color: var(--link-text);
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+
+    .discord-message-timestamp {
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    .discord-embed {
+      display: grid;
+      border-radius: 16px;
+      background: var(--surface-strong);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      position: relative;
+    }
+
+    .discord-left-border {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 6px;
+      background: var(--primary);
+    }
+
+    .discord-embed-root {
+      padding: 18px 20px 20px 20px;
+      margin-left: 10px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .discord-embed-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+      word-break: break-word;
+    }
+
+    .discord-embed-description {
+      color: var(--muted);
+      line-height: 1.8;
+      white-space: pre-wrap;
+    }
+
+    .discord-embed-fields {
+      display: grid;
+      gap: 10px;
+    }
+
+    .discord-embed-field {
+      padding: 14px 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+    }
+
+    .discord-embed-field strong {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--text);
+      font-size: 0.95rem;
+    }
+
+    .discord-embed-media {
+      display: grid;
+      gap: 10px;
+    }
+
+    .discord-embed-media img {
+      width: 100%;
+      border-radius: 14px;
+      max-height: 220px;
+      object-fit: cover;
+      display: none;
+    }
+
+    .discord-embed-footer {
+      color: var(--muted);
+      font-size: 0.9rem;
+      padding-top: 6px;
+      border-top: 1px solid var(--border);
     }
 
     .card h2 {
@@ -377,6 +518,85 @@
       const nextTheme = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
       applyTheme(nextTheme);
     });
+
+    function createFieldPreview(name, value) {
+      const field = document.createElement('div');
+      field.className = 'discord-embed-field';
+      field.innerHTML = `<strong>${name}</strong><span>${value}</span>`;
+      return field;
+    }
+
+    function updateEmbedPreview() {
+      const title = document.querySelector('#title')?.value.trim();
+      const description = document.querySelector('#description')?.value.trim();
+      const colorInput = document.querySelector('#color')?.value.trim() || '';
+      const footer = document.querySelector('#footer_text')?.value.trim();
+      const imageUrl = document.querySelector('#image_url')?.value.trim();
+      const thumbnailUrl = document.querySelector('#thumbnail_url')?.value.trim();
+      const previewColor = document.getElementById('preview-color');
+      const titleEl = document.getElementById('preview-title');
+      const descriptionEl = document.getElementById('preview-description');
+      const footerEl = document.getElementById('preview-footer');
+      const imageEl = document.getElementById('preview-image');
+      const thumbEl = document.getElementById('preview-thumbnail');
+      const fieldsContainer = document.getElementById('preview-fields');
+
+      if (!titleEl) return;
+
+      titleEl.textContent = title || 'title';
+      descriptionEl.textContent = description || 'Description';
+      footerEl.textContent = footer || 'Footer text';
+
+      const validColor = colorInput.replace(/^#/, '').match(/^[0-9a-fA-F]{6}$/);
+      if (validColor) {
+        previewColor.style.background = `#${validColor[0]}`;
+        previewColor.style.borderColor = `#${validColor[0]}`;
+      } else {
+        previewColor.style.background = 'var(--primary)';
+        previewColor.style.borderColor = 'var(--primary)';
+      }
+
+      if (imageUrl) {
+        imageEl.src = imageUrl;
+        imageEl.style.display = 'block';
+      } else {
+        imageEl.style.display = 'none';
+      }
+
+      if (thumbnailUrl) {
+        thumbEl.src = thumbnailUrl;
+        thumbEl.style.display = 'block';
+      } else {
+        thumbEl.style.display = 'none';
+      }
+
+      fieldsContainer.innerHTML = '';
+      for (let i = 1; i <= 3; i++) {
+        const nameInput = document.querySelector(`#field_${i}_name`);
+        const valueInput = document.querySelector(`#field_${i}_value`);
+        const name = nameInput?.value.trim();
+        const value = valueInput?.value.trim();
+        if (name && value) {
+          fieldsContainer.appendChild(createFieldPreview(name, value));
+        }
+      }
+
+      if (!fieldsContainer.children.length) {
+        const empty = document.createElement('div');
+        empty.className = 'embed-preview-field';
+        empty.innerHTML = '<strong>strong</strong><span>span</span>';
+        fieldsContainer.appendChild(empty);
+      }
+    }
+
+    const previewForms = document.querySelectorAll('.embed-preview-form');
+    previewForms.forEach((form) => {
+      form.addEventListener('input', updateEmbedPreview);
+      form.addEventListener('change', updateEmbedPreview);
+    });
+
+    document.addEventListener('DOMContentLoaded', updateEmbedPreview);
+    updateEmbedPreview();
   </script>
 </body>
 </html>

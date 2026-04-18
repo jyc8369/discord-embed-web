@@ -2,7 +2,7 @@
 {% block content %}
   <div class="card">
     <h2>Edit Embed Record #{{ record.id }}</h2>
-    <form action="{{ url_for('update_history', record_id=record.id) }}" method="post">
+    <form action="{{ url_for('update_history', record_id=record.id) }}" method="post" class="embed-preview-form">
       <label for="title">Title</label>
       <input id="title" name="title" value="{{ record.embed_payload.title or '' }}" />
 
@@ -23,9 +23,36 @@
 
       {% for i in range(1, 4) %}
         <label>Field {{ i }}</label>
-        <input name="field_{{ i }}_name" placeholder="Field title" value="{{ record.embed_payload.fields[i-1].name if record.embed_payload.fields and record.embed_payload.fields|length >= i else '' }}" />
-        <input name="field_{{ i }}_value" placeholder="Field value" value="{{ record.embed_payload.fields[i-1].value if record.embed_payload.fields and record.embed_payload.fields|length >= i else '' }}" />
+        <input id="field_{{ i }}_name" name="field_{{ i }}_name" placeholder="Field title" value="{{ record.embed_payload.fields[i-1].name if record.embed_payload.fields and record.embed_payload.fields|length >= i else '' }}" />
+        <input id="field_{{ i }}_value" name="field_{{ i }}_value" placeholder="Field value" value="{{ record.embed_payload.fields[i-1].value if record.embed_payload.fields and record.embed_payload.fields|length >= i else '' }}" />
       {% endfor %}
+
+      <div class="card embed-preview-card">
+        <h3>Embed Preview</h3>
+        <div class="discord-message-inner">
+          <div class="discord-author-avatar">EG</div>
+          <div class="discord-message-content">
+            <div class="discord-author-info">
+              <span class="discord-author-username">Embed</span>
+              <span class="discord-application-tag">Bot</span>
+            </div>
+            <div class="discord-message-timestamp">Preview</div>
+            <div class="discord-embed">
+              <div class="discord-left-border" id="preview-color"></div>
+              <div class="discord-embed-root">
+                <div class="discord-embed-title" id="preview-title">title</div>
+                <div class="discord-embed-description" id="preview-description">Description</div>
+                <div class="discord-embed-fields" id="preview-fields"></div>
+                <div class="discord-embed-media">
+                  <img id="preview-image" alt="Embed image preview" />
+                  <img id="preview-thumbnail" alt="Embed thumbnail preview" />
+                </div>
+                <div class="discord-embed-footer" id="preview-footer">Footer text</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <button type="submit">Update Embed</button>
     </form>

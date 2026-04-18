@@ -15,7 +15,7 @@
   {% if user %}
     <div class="card">
       <h2>Create Embed</h2>
-      <form action="{{ url_for('create_embed') }}" method="post">
+      <form action="{{ url_for('create_embed') }}" method="post" class="embed-preview-form">
         <label for="title">Title</label>
         <input id="title" name="title" placeholder="Embed title" />
 
@@ -35,16 +35,43 @@
         <input id="thumbnail_url" name="thumbnail_url" placeholder="https://..." />
 
         <label>Field 1</label>
-        <input name="field_1_name" placeholder="Field title" />
-        <input name="field_1_value" placeholder="Field value" />
+        <input id="field_1_name" name="field_1_name" placeholder="Field title" />
+        <input id="field_1_value" name="field_1_value" placeholder="Field value" />
 
         <label>Field 2</label>
-        <input name="field_2_name" placeholder="Field title" />
-        <input name="field_2_value" placeholder="Field value" />
+        <input id="field_2_name" name="field_2_name" placeholder="Field title" />
+        <input id="field_2_value" name="field_2_value" placeholder="Field value" />
 
         <label>Field 3</label>
-        <input name="field_3_name" placeholder="Field title" />
-        <input name="field_3_value" placeholder="Field value" />
+        <input id="field_3_name" name="field_3_name" placeholder="Field title" />
+        <input id="field_3_value" name="field_3_value" placeholder="Field value" />
+
+        <div class="card embed-preview-card">
+          <h3>Embed Preview</h3>
+          <div class="discord-message-inner">
+            <div class="discord-author-avatar">EG</div>
+            <div class="discord-message-content">
+              <div class="discord-author-info">
+                <span class="discord-author-username">Embed</span>
+                <span class="discord-application-tag">Bot</span>
+              </div>
+              <div class="discord-message-timestamp">Preview</div>
+              <div class="discord-embed">
+                <div class="discord-left-border" id="preview-color"></div>
+                <div class="discord-embed-root">
+                  <div class="discord-embed-title" id="preview-title">title</div>
+                  <div class="discord-embed-description" id="preview-description">Description</div>
+                  <div class="discord-embed-fields" id="preview-fields"></div>
+                  <div class="discord-embed-media">
+                    <img id="preview-image" alt="Embed image preview" />
+                    <img id="preview-thumbnail" alt="Embed thumbnail preview" />
+                  </div>
+                  <div class="discord-embed-footer" id="preview-footer">Footer text</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
         <button type="submit">Send Embed</button>
       </form>
